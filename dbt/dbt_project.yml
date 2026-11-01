@@ -1,0 +1,16 @@
+name: pipeline_consumidor
+version: "0.1.0"
+config-version: 2
+profile: pipeline_consumidor
+
+vars:
+  csv: "../dados/amostra_sintetica.csv"
+
+models:
+  pipeline_consumidor:
+    bronze:
+      +materialized: table
+    silver:
+      +materialized: table
+    gold:
+      +materialized: table

@@ -1,0 +1,7 @@
+pipeline_consumidor:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: "{{ env_var('PIPELINE_DB', 'consumidor.duckdb') }}"
+      threads: 1

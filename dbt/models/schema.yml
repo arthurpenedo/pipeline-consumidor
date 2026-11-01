@@ -1,0 +1,42 @@
+version: 2
+
+models:
+  - name: bronze_reclamacoes
+    description: CSV bruto, tudo texto.
+    columns:
+      - name: nome_fantasia
+        tests: [not_null]
+
+  - name: silver_reclamacoes
+    description: Reclamações tipadas e limpas.
+    columns:
+      - name: data_abertura
+        tests: [not_null]
+      - name: empresa
+        tests: [not_null]
+      - name: uf
+        tests:
+          - accepted_values:
+              values: [AC, AL, AM, AP, BA, CE, DF, ES, GO, MA, MG, MS, MT, PA, PB, PE, PI, PR, RJ, RN, RO, RR, RS, SC, SE, SP, TO]
+      - name: nota
+        tests:
+          - accepted_values:
+              values: [1, 2, 3, 4, 5]
+              quote: false
+              config:
+                where: "nota is not null"
+      - name: tempo_resposta_dias
+        tests:
+          - nao_negativo
+
+  - name: gold_ranking_empresas
+    columns:
+      - name: empresa
+        tests: [not_null, unique]
+      - name: reclamacoes
+        tests: [not_null]
+
+  - name: gold_serie_mensal
+    columns:
+      - name: mes
+        tests: [not_null]
