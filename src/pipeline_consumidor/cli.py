@@ -8,6 +8,8 @@ import argparse
 import sys
 from pathlib import Path
 
+import duckdb
+
 from . import runner
 
 
@@ -41,7 +43,12 @@ def main(argv: list[str] | None = None) -> int:
     if args.limite < 1:
         print("--limite deve ser pelo menos 1", file=sys.stderr)
         return 2
-    for empresa, n, pct, nota in runner.ranking(args.db, args.limite):
+    try:
+        linhas = runner.ranking(args.db, args.limite)
+    except duckdb.CatalogException:
+        print(f"{args.db} não tem a camada ouro (rode `pipeline-consumidor rodar` antes)", file=sys.stderr)
+        return 1
+    for empresa, n, pct, nota in linhas:
         print(f"{empresa}: {n} reclamações, {pct}% respondidas, nota média {nota}")
     return 0
 

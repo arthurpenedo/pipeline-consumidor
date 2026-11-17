@@ -85,6 +85,13 @@ def test_cli_ranking_recusa_limite_menor_que_1(tmp_path, capsys, limite):
     assert "pelo menos 1" in capsys.readouterr().err
 
 
+def test_cli_ranking_com_banco_sem_camada_ouro(tmp_path, capsys):
+    db = tmp_path / "vazio.duckdb"
+    duckdb.connect(str(db)).close()
+    assert main(["ranking", "--db", str(db)]) == 1
+    assert "camada ouro" in capsys.readouterr().err
+
+
 def test_cli_arquivo_inexistente(tmp_path, capsys):
     assert main(["rodar", "--csv", str(tmp_path / "nada.csv"), "--db", str(tmp_path / "x.duckdb")]) == 1
     assert "não encontrado" in capsys.readouterr().err
