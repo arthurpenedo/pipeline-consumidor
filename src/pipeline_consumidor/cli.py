@@ -38,6 +38,9 @@ def main(argv: list[str] | None = None) -> int:
     if not args.db.is_file():
         print(f"Base não encontrada: {args.db} (rode `pipeline-consumidor rodar` antes)", file=sys.stderr)
         return 1
+    if args.limite < 1:
+        print("--limite deve ser pelo menos 1", file=sys.stderr)
+        return 2
     for empresa, n, pct, nota in runner.ranking(args.db, args.limite):
         print(f"{empresa}: {n} reclamações, {pct}% respondidas, nota média {nota}")
     return 0
