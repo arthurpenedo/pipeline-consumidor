@@ -48,6 +48,9 @@ def main(argv: list[str] | None = None) -> int:
     except duckdb.CatalogException:
         print(f"{args.db} não tem a camada ouro (rode `pipeline-consumidor rodar` antes)", file=sys.stderr)
         return 1
+    except duckdb.IOException:  # arquivo existe mas não é uma base DuckDB
+        print(f"{args.db} não é uma base DuckDB válida", file=sys.stderr)
+        return 1
     for empresa, n, pct, nota in linhas:
         print(f"{empresa}: {n} reclamações, {pct}% respondidas, nota média {nota}")
     return 0

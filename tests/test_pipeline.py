@@ -96,3 +96,10 @@ def test_cli_arquivo_inexistente(tmp_path, capsys):
     assert main(["rodar", "--csv", str(tmp_path / "nada.csv"), "--db", str(tmp_path / "x.duckdb")]) == 1
     assert "não encontrado" in capsys.readouterr().err
     assert main(["ranking", "--db", str(tmp_path / "nao_existe.duckdb")]) == 1
+
+
+def test_cli_ranking_com_arquivo_que_nao_e_duckdb(tmp_path, capsys):
+    lixo = tmp_path / "lixo.duckdb"
+    lixo.write_text("isto não é um banco", encoding="utf-8")
+    assert main(["ranking", "--db", str(lixo)]) == 1
+    assert "não é uma base DuckDB válida" in capsys.readouterr().err
