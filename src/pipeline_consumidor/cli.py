@@ -30,6 +30,9 @@ def main(argv: list[str] | None = None) -> int:
         if not args.csv.is_file():
             print(f"Arquivo não encontrado: {args.csv}", file=sys.stderr)
             return 1
+        if args.db.is_dir():
+            print(f"--db precisa ser um arquivo .duckdb, mas {args.db} é uma pasta.", file=sys.stderr)
+            return 2
         if not runner.construir(args.csv, args.db):
             print("O pipeline falhou: veja os testes acima.", file=sys.stderr)
             return 1
@@ -37,12 +40,12 @@ def main(argv: list[str] | None = None) -> int:
             print(f"{tabela}: {n} linhas")
         return 0
 
+    if args.limite < 1:  # erro de uso vem antes de olhar a base, como nos outros projetos
+        print("--limite deve ser pelo menos 1", file=sys.stderr)
+        return 2
     if not args.db.is_file():
         print(f"Base não encontrada: {args.db} (rode `pipeline-consumidor rodar` antes)", file=sys.stderr)
         return 1
-    if args.limite < 1:
-        print("--limite deve ser pelo menos 1", file=sys.stderr)
-        return 2
     try:
         linhas = runner.ranking(args.db, args.limite)
     except duckdb.CatalogException:

@@ -103,3 +103,13 @@ def test_cli_ranking_com_arquivo_que_nao_e_duckdb(tmp_path, capsys):
     lixo.write_text("isto não é um banco", encoding="utf-8")
     assert main(["ranking", "--db", str(lixo)]) == 1
     assert "não é uma base DuckDB válida" in capsys.readouterr().err
+
+
+def test_cli_ranking_limite_invalido_vem_antes_da_base_ausente(tmp_path, capsys):
+    assert main(["ranking", "--db", str(tmp_path / "nao.duckdb"), "--limite", "0"]) == 2
+    assert "pelo menos 1" in capsys.readouterr().err
+
+
+def test_cli_rodar_com_db_que_e_pasta_devolve_2(tmp_path, capsys):
+    assert main(["rodar", "--db", str(tmp_path)]) == 2
+    assert "é uma pasta" in capsys.readouterr().err
